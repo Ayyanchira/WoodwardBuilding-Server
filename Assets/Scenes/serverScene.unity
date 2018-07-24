@@ -377,6 +377,34 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d75edbdceaff33a4c96b95b320a95632, type: 3}
   m_IsPrefabParent: 0
+--- !u!1 &711852683
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 711852684}
+  m_Layer: 0
+  m_Name: VuMark Location 412
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &711852684
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 711852683}
+  m_LocalRotation: {x: -0, y: 0.13052592, z: -0, w: 0.9914449}
+  m_LocalPosition: {x: 11, y: 0.5, z: 91}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 15.000001, z: 0}
 --- !u!1 &903697147
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,6 +502,34 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &919452625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 919452626}
+  m_Layer: 0
+  m_Name: VuMark Location 437
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &919452626
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 919452625}
+  m_LocalRotation: {x: -0, y: 0.13052592, z: -0, w: 0.9914449}
+  m_LocalPosition: {x: 42, y: 0.5, z: 91}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 15.000001, z: 0}
 --- !u!1 &1184195974
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,8 +846,8 @@ MonoBehaviour:
   connectionText: {fileID: 631368428}
   clientCount: {fileID: 557565812}
   messageID: 777
-  iPad: {fileID: 4854182035144090, guid: 78befeb5a80578640bccf9ed70d5f302, type: 2}
-  lens: {fileID: 4854182035144090, guid: e4a5a43080f58444ba6cb499f4cb01ae, type: 2}
+  iPadPlayer: {fileID: 1882239647258724, guid: 0cc67afa5ee81fa40af38011757d97bc, type: 2}
+  lensPlayer: {fileID: 1882239647258724, guid: 1770af75500ff5943ab6ab5ebaffba89, type: 2}
 --- !u!4 &1505598228
 Transform:
   m_ObjectHideFlags: 0
@@ -804,6 +860,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1588748414
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1588748415}
+  m_Layer: 0
+  m_Name: VuMark Location 404
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1588748415
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1588748414}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 13.5, y: 0.52, z: 31}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1729331400
 GameObject:

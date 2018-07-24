@@ -15,7 +15,6 @@ public class RotateScript : MonoBehaviour
 
     void Start()
     {
-        transform.position = new Vector3(19, .5f, 25);
         transform.rotation = new Quaternion(45f,45f,45f,0);
     }
 
