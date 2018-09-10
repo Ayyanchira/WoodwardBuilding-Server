@@ -16,11 +16,13 @@ public class CustomNetworkManager : NetworkManager {
     protected int clientID;
     private int clients;
     protected GameObject lens_player, ipad_player;
+    static Dictionary<string, string> clientAddressDictionary = new Dictionary<string, string>();
+    static Dictionary<string, GameObject> connectedPlayerDictionary = new Dictionary<string, GameObject>();
     protected Vector3 lastVufMark;
 
     public class clientMessages : MessageBase
     {
-        public string deviceType, purpose;
+        public string deviceType, purpose, ipAddress;
         public Vector3 devicePosition;
         public Quaternion deviceRotation;
     }
@@ -56,6 +58,7 @@ public class CustomNetworkManager : NetworkManager {
     public override void OnStopServer()
     {
         base.OnStopServer();
+        connectedPlayerDictionary.Clear();
         Debug.Log("Server has Stopped :(");
 
         connectionText.text = "Offline";
@@ -71,8 +74,15 @@ public class CustomNetworkManager : NetworkManager {
     {
         base.OnServerConnect(conn);
         clientID = conn.connectionId;
-        Debug.Log("Client with ID " + conn.connectionId + " has connected");
+        Debug.Log("Client with ID " + conn.connectionId + "and with ip"+ conn.address.ToString()+" has connected");
+        // TODO: add player to dictionary
+        clientAddressDictionary.Add(conn.connectionId.ToString(), conn.address.ToString());
+        GameObject connectedPlayer = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
+        connectedPlayer.transform.position = new Vector3(0, 0, 0);
+        //connectedPlayers.Add(connectedPlayer);
+        connectedPlayerDictionary.Add(conn.address.ToString(), connectedPlayer);
+        //connectedPlayer.transform.position = Vector3.zero;
         clients++;
         clientCount.text = " " + clients;
 
@@ -84,8 +94,18 @@ public class CustomNetworkManager : NetworkManager {
     //Called when a client has disconnected from the server
     public override void OnServerDisconnect(NetworkConnection conn)
     {
+
         base.OnServerDisconnect(conn);
-        Debug.Log("Client with ID " + conn.connectionId + " has disconnected :(");
+        Debug.Log("Client with ID " + conn.connectionId + "and with ip" + conn.address.ToString() + " has disconnected :(");
+
+        string clientIP = clientAddressDictionary[conn.connectionId.ToString()];
+
+        print("Removing prefab associated with ip " + conn.address.ToString());
+         GameObject disconnectingPlayer = connectedPlayerDictionary[clientIP];
+        Destroy(disconnectingPlayer);
+        //disconnectingPlayer = null;
+        connectedPlayerDictionary.Remove(conn.address.ToString());
+        clientAddressDictionary.Remove(conn.connectionId.ToString());
         clients--;
         clientCount.text = " " + clients;
 
@@ -127,6 +147,7 @@ public class CustomNetworkManager : NetworkManager {
                 Debug.Log("Client of type " + msg.deviceType + " has connected at " + msg.devicePosition);
                 lens_player = (GameObject)GameObject.Instantiate(lensPlayer, msg.devicePosition, Quaternion.identity);
                 lastVufMark = msg.devicePosition;
+                //connectedPlayers.Add(lens_player);
                 NetworkServer.Spawn(lens_player);
             }
 
@@ -134,6 +155,7 @@ public class CustomNetworkManager : NetworkManager {
             {
                 Debug.Log("Client of type " + msg.deviceType + " has connected. " + " Position of " + msg.devicePosition + " was given");
                 ipad_player = (GameObject)GameObject.Instantiate(iPadPlayer, msg.devicePosition, Quaternion.identity);
+                //connectedPlayers.Add(ipad_player);
                 NetworkServer.Spawn(ipad_player);
             }
         }
@@ -147,6 +169,19 @@ public class CustomNetworkManager : NetworkManager {
             lens_player.transform.position = location;
             lens_player.transform.rotation = msg.deviceRotation;
             
+        }
+        else if(msg.purpose == "Simulation")
+        {
+           
+            print("Simulation message received");
+            print("keys in dictionary : " + connectedPlayerDictionary.Keys);
+            //if (msg.ipAddress == "")
+            //{
+                msg.ipAddress = clientAddressDictionary[netMsg.conn.connectionId.ToString()];
+            //}
+            GameObject syncingPlayer = connectedPlayerDictionary[msg.ipAddress];
+            syncingPlayer.transform.position = msg.devicePosition;
+            syncingPlayer.transform.rotation = msg.deviceRotation;
         }
     }
 
