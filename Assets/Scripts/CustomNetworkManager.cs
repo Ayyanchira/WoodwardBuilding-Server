@@ -174,6 +174,7 @@ public class CustomNetworkManager : NetworkManager {
         {
            
             print("Simulation message received");
+            print("player " + msg.deviceType +" location fetched as " + msg.devicePosition);
             print("keys in dictionary : " + connectedPlayerDictionary.Keys);
             //if (msg.ipAddress == "")
             //{
