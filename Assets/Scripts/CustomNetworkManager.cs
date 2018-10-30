@@ -78,6 +78,7 @@ public class CustomNetworkManager : NetworkManager {
         // TODO: add player to dictionary
         clientAddressDictionary.Add(conn.connectionId.ToString(), conn.address.ToString());
         GameObject connectedPlayer = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        ChangeMaterial(connectedPlayer.GetComponent<MeshRenderer>());
 
         connectedPlayer.transform.position = new Vector3(0, 0, 0);
         //connectedPlayers.Add(connectedPlayer);
@@ -146,6 +147,10 @@ public class CustomNetworkManager : NetworkManager {
             {
                 Debug.Log("Client of type " + msg.deviceType + " has connected at " + msg.devicePosition);
                 lens_player = (GameObject)GameObject.Instantiate(lensPlayer, msg.devicePosition, Quaternion.identity);
+               
+                //Assign a random colour
+                ChangeMaterial(lens_player.GetComponent<MeshRenderer>());
+
                 lastVufMark = msg.devicePosition;
                 //connectedPlayers.Add(lens_player);
                 NetworkServer.Spawn(lens_player);
@@ -155,6 +160,10 @@ public class CustomNetworkManager : NetworkManager {
             {
                 Debug.Log("Client of type " + msg.deviceType + " has connected. " + " Position of " + msg.devicePosition + " was given");
                 ipad_player = (GameObject)GameObject.Instantiate(iPadPlayer, msg.devicePosition, Quaternion.identity);
+
+                //Assign a random colour
+                ChangeMaterial(ipad_player.GetComponent<MeshRenderer>());
+
                 //connectedPlayers.Add(ipad_player);
                 NetworkServer.Spawn(ipad_player);
             }
@@ -186,7 +195,14 @@ public class CustomNetworkManager : NetworkManager {
         }
     }
 
-  
+    void ChangeMaterial(MeshRenderer platformRenderer)
+    {
+        Material material = new Material(Shader.Find("Standard"));
+        Color color = new Color(Random.Range(0, 1), Random.Range(0, 1), Random.Range(0, 1), 1);
+        material.color = color;
+        platformRenderer.material = material;
+    }
+
     /*
     protected void receiveClientMessage(NetworkMessage netMsg)
     {
