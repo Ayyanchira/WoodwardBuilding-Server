@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class CustomNetworkManager : NetworkManager {
+public class CustomNetworkManager : NetworkManager
+{
 
     //Public variables
     public Text connectionText, clientCount;
@@ -27,11 +28,99 @@ public class CustomNetworkManager : NetworkManager {
         public Quaternion deviceRotation;
     }
 
+    public class ClientLocations : MessageBase
+    {
+        //TODO: Not able to find an alternative for this. Message base does not support Gameobject sending.
+        public Vector3 devicePosition1;
+        public Quaternion deviceRotation1;
+        public Vector3 devicePosition2;
+        public Quaternion deviceRotation2;
+        public Vector3 devicePosition3;
+        public Quaternion deviceRotation3;
+        public Vector3 devicePosition4;
+        public Quaternion deviceRotation4;
+        public Vector3 devicePosition5;
+        public Quaternion deviceRotation5;
+        public Vector3 devicePosition6;
+        public Quaternion deviceRotation6;
+        public Vector3 devicePosition7;
+        public Quaternion deviceRotation7;
+        public Vector3 devicePosition8;
+        public Quaternion deviceRotation8;
+    }
+
     void Start()
     {
-       
+
     }
-    
+
+    private int nextUpdate = 1;
+    void Update()
+    {
+
+        // If the next update is reached
+        if (Time.time >= nextUpdate)
+        {
+            // Change the next update (current second+1)
+            nextUpdate = Mathf.FloorToInt(Time.time) + 1;
+            // Call your fonction
+            UpdateEverySecond();
+        }
+
+    }
+    void UpdateEverySecond()
+    {
+        if (clients > 0)
+        {
+            var sendMsg = new ClientLocations();
+            int count = 0;
+            foreach (GameObject player in connectedPlayerDictionary.Values)
+            {
+                switch (count)
+                {
+                    case 0:
+                        sendMsg.devicePosition1 = player.transform.position;
+                        sendMsg.deviceRotation1 = player.transform.rotation;
+                        break;
+                    case 1:
+                        sendMsg.devicePosition2 = player.transform.position;
+                        sendMsg.deviceRotation2 = player.transform.rotation;
+                        break;
+                    case 2:
+                        sendMsg.devicePosition3 = player.transform.position;
+                        sendMsg.deviceRotation3 = player.transform.rotation;
+                        break;
+                    case 3:
+                        sendMsg.devicePosition4 = player.transform.position;
+                        sendMsg.deviceRotation4 = player.transform.rotation;
+                        break;
+                    case 4:
+                        sendMsg.devicePosition5 = player.transform.position;
+                        sendMsg.deviceRotation5 = player.transform.rotation;
+                        break;
+                    case 5:
+                        sendMsg.devicePosition6 = player.transform.position;
+                        sendMsg.deviceRotation6 = player.transform.rotation;
+                        break;
+                    case 6:
+                        sendMsg.devicePosition7 = player.transform.position;
+                        sendMsg.deviceRotation7 = player.transform.rotation;
+                        break;
+                    case 7:
+                        sendMsg.devicePosition8 = player.transform.position;
+                        sendMsg.deviceRotation8 = player.transform.rotation;
+                        break;
+                    default:
+                        print("Trying to add 9th player at server side. Please check");
+                        break;
+                }
+
+                count++;
+            }
+            NetworkServer.SendToAll(778, sendMsg);
+        }
+    }
+
     //Required GUI function that currently produces two buttons
     private void OnGUI()
     {
@@ -40,7 +129,7 @@ public class CustomNetworkManager : NetworkManager {
         if (GUI.Button(new Rect(10, 110, 125, 50), "Stop Server"))
             StopServer();
     }
-    
+
     //Called when the server has started
     //All functions with "override" in the definition are NetworkManager predefined functions
     public override void OnStartServer()
@@ -74,7 +163,7 @@ public class CustomNetworkManager : NetworkManager {
     {
         base.OnServerConnect(conn);
         clientID = conn.connectionId;
-        Debug.Log("Client with ID " + conn.connectionId + "and with ip"+ conn.address.ToString()+" has connected");
+        Debug.Log("Client with ID " + conn.connectionId + "and with ip" + conn.address.ToString() + " has connected");
         // TODO: add player to dictionary
         clientAddressDictionary.Add(conn.connectionId.ToString(), conn.address.ToString());
         GameObject connectedPlayer = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -88,7 +177,12 @@ public class CustomNetworkManager : NetworkManager {
         clientCount.text = " " + clients;
 
         if (clients > 0)
+        {
             clientCount.color = Color.green;
+            //TODO: Trying to send message to client
+
+        }
+
 
     }
 
@@ -102,7 +196,7 @@ public class CustomNetworkManager : NetworkManager {
         string clientIP = clientAddressDictionary[conn.connectionId.ToString()];
 
         print("Removing prefab associated with ip " + conn.address.ToString());
-         GameObject disconnectingPlayer = connectedPlayerDictionary[clientIP];
+        GameObject disconnectingPlayer = connectedPlayerDictionary[clientIP];
         Destroy(disconnectingPlayer);
         //disconnectingPlayer = null;
         connectedPlayerDictionary.Remove(conn.address.ToString());
@@ -122,7 +216,7 @@ public class CustomNetworkManager : NetworkManager {
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
     {
-       
+
         Debug.Log("adding a player");
         //var player = (GameObject)GameObject.Instantiate(playerPrefab, startPosition, Quaternion.identity);
         //player.GetComponent<MeshRenderer>.material("_Color", Color.green);
@@ -133,7 +227,7 @@ public class CustomNetworkManager : NetworkManager {
     {
         base.OnServerRemovePlayer(conn, player);
 
-        if(player.gameObject != null)
+        if (player.gameObject != null)
             NetworkServer.Destroy(player.gameObject);
     }
 
@@ -141,53 +235,15 @@ public class CustomNetworkManager : NetworkManager {
     {
         var msg = netMsg.ReadMessage<clientMessages>();
 
-        if (msg.purpose == "Initialization")
+        if (msg.purpose == "Simulation")
         {
-            if (msg.deviceType == "Hololens")
-            {
-                Debug.Log("Client of type " + msg.deviceType + " has connected at " + msg.devicePosition);
-                lens_player = (GameObject)GameObject.Instantiate(lensPlayer, msg.devicePosition, Quaternion.identity);
-               
-                //Assign a random colour
-                ChangeMaterial(lens_player.GetComponent<MeshRenderer>());
 
-                lastVufMark = msg.devicePosition;
-                //connectedPlayers.Add(lens_player);
-                NetworkServer.Spawn(lens_player);
-            }
-
-            else if (msg.deviceType == "iPad")
-            {
-                Debug.Log("Client of type " + msg.deviceType + " has connected. " + " Position of " + msg.devicePosition + " was given");
-                ipad_player = (GameObject)GameObject.Instantiate(iPadPlayer, msg.devicePosition, Quaternion.identity);
-
-                //Assign a random colour
-                ChangeMaterial(ipad_player.GetComponent<MeshRenderer>());
-
-                //connectedPlayers.Add(ipad_player);
-                NetworkServer.Spawn(ipad_player);
-            }
-        }
-
-        else if(msg.purpose == "Synchronization")
-        {
-            Vector3 location = msg.devicePosition + lastVufMark;
-            float temp = location.z;
-            location.z = location.x; // delete this coordinate switching code and flip the map by 180 degrees on the Y-axis
-            location.x = -temp;
-            lens_player.transform.position = location;
-            lens_player.transform.rotation = msg.deviceRotation;
-            
-        }
-        else if(msg.purpose == "Simulation")
-        {
-           
             print("Simulation message received");
-            print("player " + msg.deviceType +" location fetched as " + msg.devicePosition);
+            print("player " + msg.deviceType + " location fetched as " + msg.devicePosition);
             print("keys in dictionary : " + connectedPlayerDictionary.Keys);
             //if (msg.ipAddress == "")
             //{
-                msg.ipAddress = clientAddressDictionary[netMsg.conn.connectionId.ToString()];
+            msg.ipAddress = clientAddressDictionary[netMsg.conn.connectionId.ToString()];
             //}
             GameObject syncingPlayer = connectedPlayerDictionary[msg.ipAddress];
             syncingPlayer.transform.position = msg.devicePosition;
@@ -203,56 +259,4 @@ public class CustomNetworkManager : NetworkManager {
         platformRenderer.material = material;
     }
 
-    /*
-    protected void receiveClientMessage(NetworkMessage netMsg)
-    {
-        //netMsg.reader.SeekZero(); //Index out of range error without this
-        var msg = netMsg.ReadMessage<clientMessages>();
-
-        if (msg.firstConnect)
-        {
-            firstConnectSetup(msg.devicePosition, msg.deviceType);
-
-            var forClient = new toClientMessages();
-            forClient.clientID = clientID;
-
-          //  server.Send(messageID, forClient);
-        }
-
-        else
-            trackingSetup(msg.devicePosition, msg.deviceType, msg.clientID);
-
-        
-    }
-
-    protected void firstConnectSetup(Vector3 devicePosition, string deviceType)
-    {
-        Debug.Log("Device with the type " + deviceType + " at position " + devicePosition + " has connected!");
-
-        if (deviceType == "iPad")
-        {
-            GameObject padPlayer = Instantiate(iPad, devicePosition, Quaternion.identity).gameObject;
-            iPad.transform.position = devicePosition;
-            playerDict.Add(clientID, padPlayer);
-            Debug.Log("Client ID " + clientID + " saved to dictionary.");
-        }
-
-        else if (deviceType == "HoloLens")
-        {
-            GameObject lensPlayer = Instantiate(lens, devicePosition, Quaternion.identity).gameObject;
-            lens.transform.position = devicePosition;
-            playerDict.Add(clientID, lensPlayer);
-            Debug.Log("Client ID " + clientID + " saved to dictionary.");
-        }
-    }
-
-    protected void trackingSetup(Vector3 devicePosition, string deviceType, int deviceID)
-    {
-        Debug.Log("Device with the type " + deviceType + " has tracked an Image target at position " + devicePosition);
-
-        GameObject player;
-        playerDict.TryGetValue(deviceID, out player);
-        player.transform.position = devicePosition;
-    }
-    */
 }
