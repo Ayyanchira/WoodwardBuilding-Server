@@ -54,7 +54,7 @@ public class CustomNetworkManager : NetworkManager
 
     }
 
-    private int nextUpdate = 1;
+    private float nextUpdate = 1;
     void Update()
     {
 
@@ -62,7 +62,7 @@ public class CustomNetworkManager : NetworkManager
         if (Time.time >= nextUpdate)
         {
             // Change the next update (current second+1)
-            nextUpdate = Mathf.FloorToInt(Time.time) + 1;
+            nextUpdate = Time.time + 0.5f;
             // Call your fonction
             UpdateEverySecond();
         }
